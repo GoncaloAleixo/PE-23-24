@@ -31,18 +31,16 @@ dados_combinados <- merge(renovaveis, total_energia, by = c("Date", "COUNTRY"))
 # Calculando a proporção de energia renovável
 dados_combinados$RenewableShare <- (dados_combinados$RenewableEnergy / dados_combinados$TotalEnergy) * 100
 
-# Certificando que a coluna RenewableShare está dentro de um intervalo razoável (0-100)
-summary(dados_combinados$RenewableShare)
-
 # Selecionando apenas as colunas necessárias para o gráfico
 dados_para_grafico <- dados_combinados[, c("Date", "COUNTRY", "RenewableShare")]
 
 # Gráfico da evolução mensal da proporção de energia renovável
 ggplot(dados_para_grafico, aes(x = Date, y = RenewableShare, color = COUNTRY, group = COUNTRY)) +
   geom_line() +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y", limits = as.Date(c("2015-01-01", "2022-12-31"))) +
   scale_y_continuous(limits = c(0, 100), labels = scales::label_percent(scale = 1)) +
   labs(title = "Monthly Evolution of Renewable Energy Production Share",
        subtitle = "Proportion of electricity from renewable sources since 2015",
        x = "Date",
-       y = "Renewable Energy Share (%)") +
-  theme_minimal()
+       y = "Renewable Energy Produced (%)") +
+  theme_minimal() + theme(legend.position = "top")
